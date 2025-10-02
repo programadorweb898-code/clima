@@ -1,7 +1,7 @@
 'use server';
 
-import { generateMockData } from '@/lib/weather-data';
 import { summarizeCurrentWeather } from '@/ai/flows/summarize-current-weather';
+import { getRealWeather } from '@/ai/flows/get-real-weather';
 import { countries } from '@/lib/countries';
 
 export async function getWeatherData(country: string) {
@@ -12,25 +12,26 @@ export async function getWeatherData(country: string) {
       throw new Error('Country not found.');
     }
 
-    const { current, forecast } = generateMockData(normalizedCountry);
-
+    // Get real weather data
+    const weatherResult = await getRealWeather({ country: normalizedCountry });
+    
+    // Get summary from AI
     const summaryResult = await summarizeCurrentWeather({
       country: normalizedCountry,
-      temperature: current.temperature,
-      humidity: current.humidity,
-      windSpeed: current.windSpeed,
-      conditions: current.conditions,
+      temperature: weatherResult.current.temperature,
+      humidity: weatherResult.current.humidity,
+      windSpeed: weatherResult.current.windSpeed,
+      conditions: weatherResult.current.conditions,
     });
 
     return {
       success: true,
       data: {
         current: {
-          ...current,
+          ...weatherResult.current,
           summary: summaryResult.summary,
-          country: normalizedCountry,
         },
-        forecast,
+        forecast: weatherResult.forecast,
       },
     };
   } catch (error) {

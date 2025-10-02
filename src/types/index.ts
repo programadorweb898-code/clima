@@ -1,4 +1,4 @@
-export type WeatherCondition = 'Sunny' | 'Cloudy' | 'Rainy' | 'Snowy';
+export type WeatherCondition = string;
 
 export interface CurrentWeather {
   temperature: number;
@@ -14,6 +14,7 @@ export interface ForecastDay {
   high: number;
   low: number;
   precipitation: number;
+  conditions: WeatherCondition;
 }
 
 export interface WeatherData {

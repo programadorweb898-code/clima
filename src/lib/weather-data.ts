@@ -1,3 +1,5 @@
+// This file is no longer used for data generation but is kept for reference 
+// or if you want to switch back to mock data.
 import type { WeatherCondition, ForecastDay } from '@/types';
 
 const stringToHash = (str: string): number => {
@@ -40,6 +42,7 @@ export const generateMockData = (country: string) => {
       low,
       high,
       precipitation,
+      conditions: CONDITIONS[Math.floor(seededRandom(daySeed * 4) * CONDITIONS.length)] as WeatherCondition,
     };
   });
 

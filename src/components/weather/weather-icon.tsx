@@ -1,6 +1,5 @@
 'use client';
-import type { WeatherCondition } from '@/types';
-import { Sun, Cloud, CloudRain, Snowflake } from 'lucide-react';
+import { Sun, Cloud, CloudRain, Snowflake, CloudLightning, CloudDrizzle, Tornado, Haze } from 'lucide-react';
 
 const AnimatedSun = () => (
   <Sun className="size-full text-yellow-400" style={{ animation: 'spin 10s linear infinite' }} />
@@ -33,26 +32,47 @@ const AnimatedSnow = () => (
   </div>
 );
 
+// New icons based on OpenWeatherMap conditions
+const conditionMap: { [key: string]: React.ComponentType } = {
+  'Thunderstorm': () => <CloudLightning className="size-full text-yellow-300" />,
+  'Drizzle': () => <CloudDrizzle className="size-full text-blue-200" />,
+  'Rain': AnimatedRain,
+  'Snow': AnimatedSnow,
+  'Mist': () => <Haze className="size-full text-gray-300" />,
+  'Smoke': () => <Haze className="size-full text-gray-400" />,
+  'Haze': () => <Haze className="size-full text-gray-300" />,
+  'Dust': () => <Haze className="size-full text-yellow-600/50" />,
+  'Fog': () => <Haze className="size-full text-gray-300" />,
+  'Sand': () => <Haze className="size-full text-yellow-600/50" />,
+  'Ash': () => <Haze className="size-full text-gray-500" />,
+  'Squall': () => <Wind className="size-full text-gray-400" />,
+  'Tornado': () => <Tornado className="size-full text-gray-600" />,
+  'Clear': AnimatedSun,
+  'Clouds': AnimatedCloud,
+};
+
+// Fallback for previous simple conditions
+const legacyConditionMap: { [key: string]: React.ComponentType } = {
+    'Sunny': AnimatedSun,
+    'Cloudy': AnimatedCloud,
+    'Rainy': AnimatedRain,
+    'Snowy': AnimatedSnow
+};
+
 interface WeatherIconProps {
-  conditions: WeatherCondition;
+  conditions: string;
   className?: string;
 }
 
 export function WeatherIcon({ conditions, className }: WeatherIconProps) {
-  const renderIcon = () => {
-    switch (conditions) {
-      case 'Sunny':
-        return <AnimatedSun />;
-      case 'Cloudy':
-        return <AnimatedCloud />;
-      case 'Rainy':
-        return <AnimatedRain />;
-      case 'Snowy':
-        return <AnimatedSnow />;
-      default:
-        return <AnimatedCloud />;
-    }
-  };
+  const IconComponent = conditionMap[conditions] || legacyConditionMap[conditions] || AnimatedCloud;
 
-  return <div className={className}>{renderIcon()}</div>;
+  return <div className={className}><IconComponent /></div>;
 }
+
+// Dummy Wind component if not imported from lucide
+const Wind = (props: any) => (
+  <svg {...props} stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
+    <path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"></path>
+  </svg>
+);
