@@ -51,3 +51,4 @@ export function CurrentWeatherCard({ data }: CurrentWeatherCardProps) {
     </Card>
   );
 }
+ 

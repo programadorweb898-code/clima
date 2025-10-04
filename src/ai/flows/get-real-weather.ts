@@ -1,7 +1,7 @@
 'use server';
 
 /**
- * @fileOverview Fetches real-time weather data from OpenWeatherMap API.
+ * @fileOverview Fetches real-time weather data from WeatherAPI.com.
  * 
  * - getRealWeather - A function that fetches current weather and forecast data.
  * - RealWeatherInput - The input type for the getRealWeather function.
@@ -39,9 +39,8 @@ const RealWeatherOutputSchema = z.object({
 });
 export type RealWeatherOutput = z.infer<typeof RealWeatherOutputSchema>;
 
-const API_KEY = process.env.OPENWEATHER_API_KEY;
-const GEO_URL = 'https://api.openweathermap.org/geo/1.0/direct';
-const WEATHER_URL = 'https://api.openweathermap.org/data/2.5/onecall';
+const API_KEY = process.env.WEATHERAPI_API_KEY;
+const WEATHER_URL = 'https://api.weatherapi.com/v1/forecast.json';
 
 const getRealWeatherFlow = ai.defineFlow(
   {
@@ -51,36 +50,34 @@ const getRealWeatherFlow = ai.defineFlow(
   },
   async ({ country }) => {
     if (!API_KEY) {
-      throw new Error('OpenWeatherMap API key is not set.');
+      throw new Error('WeatherAPI.com API key is not set.');
     }
 
-    // 1. Geocode country name to lat/lon
-    const geoResponse = await fetch(`${GEO_URL}?q=${country}&limit=1&appid=${API_KEY}`);
-    if (!geoResponse.ok) throw new Error('Failed to geocode country.');
-    const geoData = (await geoResponse.json()) as any[];
-    if (!geoData || geoData.length === 0) throw new Error(`Could not find location for ${country}.`);
-    const { lat, lon } = geoData[0];
-
-    // 2. Get weather data
-    const weatherResponse = await fetch(`${WEATHER_URL}?lat=${lat}&lon=${lon}&exclude=minutely,hourly,alerts&units=metric&appid=${API_KEY}`);
-    if (!weatherResponse.ok) throw new Error('Failed to fetch weather data.');
+    // Get weather data (current and forecast)
+    // We request 8 days to get today + the next 7 days for the forecast.
+    const weatherResponse = await fetch(`${WEATHER_URL}?key=${API_KEY}&q=${country}&days=8&aqi=no&alerts=no`);
+    if (!weatherResponse.ok) {
+        const errorData = await weatherResponse.json();
+        throw new Error(errorData.error.message || 'Failed to fetch weather data.');
+    }
     const weatherData = (await weatherResponse.json()) as any;
-
-    // 3. Format data
+    
+    // Format current weather data
     const current = {
-      temperature: Math.round(weatherData.current.temp),
+      temperature: Math.round(weatherData.current.temp_c),
       humidity: weatherData.current.humidity,
-      windSpeed: Math.round(weatherData.current.wind_speed * 3.6), // m/s to km/h
-      conditions: weatherData.current.weather[0].main,
+      windSpeed: Math.round(weatherData.current.wind_kph),
+      conditions: weatherData.current.condition.text,
       country,
     };
 
-    const forecast = weatherData.daily.slice(1, 8).map((day: any) => ({
-      day: new Date(day.dt * 1000).toLocaleDateString('en-US', { weekday: 'short' }),
-      high: Math.round(day.temp.max),
-      low: Math.round(day.temp.min),
-      precipitation: Math.round((day.pop || 0) * 100),
-      conditions: day.weather[0].main,
+    // Format forecast data for the next 7 days
+    const forecast = weatherData.forecast.forecastday.slice(1, 8).map((day: any) => ({
+      day: new Date(day.date).toLocaleDateString('en-US', { weekday: 'short' }),
+      high: Math.round(day.day.maxtemp_c),
+      low: Math.round(day.day.mintemp_c),
+      precipitation: Math.round(day.day.daily_chance_of_rain),
+      conditions: day.day.condition.text,
     }));
     
     return { current, forecast };
