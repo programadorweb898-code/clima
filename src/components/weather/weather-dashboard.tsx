@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Search, Loader } from 'lucide-react';
 import { CurrentWeatherCard } from './current-weather-card';
-import { ForecastChartCard } from './forecast-chart-card';
+import { ForecastListCard } from './forecast-list-card';
 import { WorldMapCard } from './world-map-card';
 import { Card, CardContent } from '../ui/card';
 
@@ -92,7 +92,7 @@ export function WeatherDashboard() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-in fade-in duration-500">
           <div className="lg:col-span-2 space-y-6">
             <CurrentWeatherCard data={weatherData.current} />
-            <ForecastChartCard data={weatherData.forecast} />
+            <ForecastListCard data={weatherData.forecast} />
           </div>
           <div className="lg:col-span-1">
             <WorldMapCard />
