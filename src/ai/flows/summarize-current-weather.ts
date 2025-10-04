@@ -17,6 +17,7 @@ const SummarizeCurrentWeatherInputSchema = z.object({
   humidity: z.number().describe('The current humidity percentage.'),
   windSpeed: z.number().describe('The current wind speed in kilometers per hour.'),
   conditions: z.string().describe('A description of the current weather conditions.'),
+  lang: z.enum(['en', 'es']).optional().default('en'),
 });
 export type SummarizeCurrentWeatherInput = z.infer<typeof SummarizeCurrentWeatherInputSchema>;
 
@@ -33,7 +34,7 @@ const summarizeCurrentWeatherPrompt = ai.definePrompt({
   name: 'summarizeCurrentWeatherPrompt',
   input: {schema: SummarizeCurrentWeatherInputSchema},
   output: {schema: SummarizeCurrentWeatherOutputSchema},
-  prompt: `Summarize the current weather conditions for {{country}} in a single, concise sentence.
+  prompt: `Summarize the current weather conditions for {{country}} in a single, concise sentence in {{lang}}.
 
 Current Conditions:
 - Temperature: {{temperature}}°C

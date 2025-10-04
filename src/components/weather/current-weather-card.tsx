@@ -1,15 +1,18 @@
 'use client';
+import { useContext } from 'react';
 import type { CurrentWeather } from '@/types';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { WeatherIcon } from './weather-icon';
 import { Droplets, Wind } from 'lucide-react';
+import { LanguageContext } from '@/context/language-context';
 
 interface CurrentWeatherCardProps {
   data: CurrentWeather;
 }
 
 export function CurrentWeatherCard({ data }: CurrentWeatherCardProps) {
-  const currentDate = new Date().toLocaleDateString('en-US', {
+  const { lang, translations } = useContext(LanguageContext);
+  const currentDate = new Date().toLocaleDateString(lang === 'es' ? 'es-ES' : 'en-US', {
     weekday: 'long',
     year: 'numeric',
     month: 'long',
@@ -37,12 +40,12 @@ export function CurrentWeatherCard({ data }: CurrentWeatherCardProps) {
               <div className="flex flex-col items-center">
                 <Droplets className="size-6 text-primary" />
                 <p className="font-bold text-lg">{data.humidity}%</p>
-                <p className="text-xs text-muted-foreground">Humidity</p>
+                <p className="text-xs text-muted-foreground">{translations.humidity}</p>
               </div>
               <div className="flex flex-col items-center">
                 <Wind className="size-6 text-primary" />
                 <p className="font-bold text-lg">{data.windSpeed} km/h</p>
-                <p className="text-xs text-muted-foreground">Wind</p>
+                <p className="text-xs text-muted-foreground">{translations.wind}</p>
               </div>
             </div>
           </div>
@@ -51,4 +54,3 @@ export function CurrentWeatherCard({ data }: CurrentWeatherCardProps) {
     </Card>
   );
 }
- 

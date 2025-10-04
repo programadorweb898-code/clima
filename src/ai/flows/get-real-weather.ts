@@ -14,6 +14,7 @@ import fetch from 'node-fetch';
 
 const RealWeatherInputSchema = z.object({
   country: z.string().describe('The country to fetch weather for.'),
+  lang: z.enum(['en', 'es']).optional().default('en'),
 });
 export type RealWeatherInput = z.infer<typeof RealWeatherInputSchema>;
 
@@ -26,7 +27,7 @@ const CurrentWeatherSchema = z.object({
 });
 
 const ForecastDaySchema = z.object({
-  day: z.string(),
+  date: z.string(),
   high: z.number(),
   low: z.number(),
   precipitation: z.number(),
@@ -48,14 +49,14 @@ const getRealWeatherFlow = ai.defineFlow(
     inputSchema: RealWeatherInputSchema,
     outputSchema: RealWeatherOutputSchema,
   },
-  async ({ country }) => {
+  async ({ country, lang }) => {
     if (!API_KEY) {
       throw new Error('WeatherAPI.com API key is not set.');
     }
 
     // Get weather data (current and forecast)
     // We request 8 days to get today + the next 7 days for the forecast.
-    const weatherResponse = await fetch(`${WEATHER_URL}?key=${API_KEY}&q=${country}&days=8&aqi=no&alerts=no`);
+    const weatherResponse = await fetch(`${WEATHER_URL}?key=${API_KEY}&q=${country}&days=8&aqi=no&alerts=no&lang=${lang}`);
     if (!weatherResponse.ok) {
         const errorData = await weatherResponse.json();
         throw new Error(errorData.error.message || 'Failed to fetch weather data.');
@@ -68,12 +69,12 @@ const getRealWeatherFlow = ai.defineFlow(
       humidity: weatherData.current.humidity,
       windSpeed: Math.round(weatherData.current.wind_kph),
       conditions: weatherData.current.condition.text,
-      country,
+      country: weatherData.location.name,
     };
 
     // Format forecast data for the next 7 days
     const forecast = weatherData.forecast.forecastday.slice(1, 8).map((day: any) => ({
-      day: new Date(day.date).toLocaleDateString('en-US', { weekday: 'short' }),
+      date: day.date,
       high: Math.round(day.day.maxtemp_c),
       low: Math.round(day.day.mintemp_c),
       precipitation: Math.round(day.day.daily_chance_of_rain),

@@ -10,7 +10,7 @@ export interface CurrentWeather {
 }
 
 export interface ForecastDay {
-  day: string;
+  date: string;
   high: number;
   low: number;
   precipitation: number;

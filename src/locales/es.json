@@ -1,0 +1,16 @@
+{
+  "title": "Observatorio Meteorológico Global",
+  "subtitle": "Tu panel meteorológico mundial interactivo.",
+  "searchPlaceholder": "Busca un país...",
+  "search": "Buscar",
+  "fetching": "Obteniendo datos del clima...",
+  "pleaseWait": "Por favor espera un momento.",
+  "welcome": "¡Bienvenido!",
+  "welcomeMessage": "Busca un país para comenzar y ver las últimas condiciones climáticas.",
+  "humidity": "Humedad",
+  "wind": "Viento",
+  "forecastTitle": "Pronóstico de 7 Días",
+  "forecastSubtitle": "El clima para la próxima semana",
+  "globalView": "Vista Global",
+  "error": "Error"
+}

@@ -1,17 +1,22 @@
 'use client';
+import { useContext } from 'react';
 import type { ForecastDay } from '@/types';
 import { Card, CardContent } from '@/components/ui/card';
 import { WeatherIcon } from './weather-icon';
 import { Umbrella } from 'lucide-react';
+import { LanguageContext } from '@/context/language-context';
 
 interface ForecastDayCardProps {
   data: ForecastDay;
 }
 
 export function ForecastDayCard({ data }: ForecastDayCardProps) {
+  const { lang } = useContext(LanguageContext);
+  const dayName = new Date(data.date).toLocaleDateString(lang === 'es' ? 'es-ES' : 'en-US', { weekday: 'short' });
+
   return (
     <Card className="flex flex-col items-center p-3 text-center">
-      <p className="font-bold font-headline">{data.day}</p>
+      <p className="font-bold font-headline">{dayName}</p>
       <WeatherIcon conditions={data.conditions} className="w-12 h-12 my-2" />
       <div className="text-sm">
         <span className="font-semibold text-primary">{data.high}°</span>

@@ -1,0 +1,16 @@
+{
+  "title": "Global Weather Watch",
+  "subtitle": "Your interactive world weather dashboard.",
+  "searchPlaceholder": "Search for a country...",
+  "search": "Search",
+  "fetching": "Fetching weather data...",
+  "pleaseWait": "Please wait a moment.",
+  "welcome": "Welcome!",
+  "welcomeMessage": "Search for a country to get started and see the latest weather conditions.",
+  "humidity": "Humidity",
+  "wind": "Wind",
+  "forecastTitle": "7-Day Forecast",
+  "forecastSubtitle": "The upcoming weather for the next week",
+  "globalView": "Global View",
+  "error": "Error"
+}
