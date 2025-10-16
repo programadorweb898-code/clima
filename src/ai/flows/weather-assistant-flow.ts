@@ -57,7 +57,7 @@ const getClothingRecommendationTool = ai.defineTool(
     
     const llmResponse = await ai.generate({
       prompt: recommendationPrompt,
-      model: 'googleai/gemini-2.5-flash',
+      model: 'gemini-pro',
     });
     
     return llmResponse.text;
@@ -101,7 +101,7 @@ ${JSON.stringify(translatedCountries.slice(0, 50))}... and more.
       },
     });
 
-    const output = llmResponse.output();
+    const output = llmResponse.output;
     if (!output) {
       return { answer: lang === 'es' ? 'Lo siento, no pude procesar tu solicitud.' : 'Sorry, I could not process your request.' };
     }
