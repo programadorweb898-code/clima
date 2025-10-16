@@ -4,41 +4,11 @@
  * @fileOverview Fetches real-time weather data from WeatherAPI.com.
  * 
  * - getRealWeather - A function that fetches current weather and forecast data.
- * - RealWeatherInputSchema - The Zod schema for the getRealWeather function's input.
- * - RealWeatherOutputSchema - The Zod schema for the getRealWeather function's output.
  */
 
 import { ai } from '@/ai/genkit';
-import { z } from 'genkit';
 import fetch from 'node-fetch';
-
-export const RealWeatherInputSchema = z.object({
-  country: z.string().describe('The country to fetch weather for.'),
-  lang: z.enum(['en', 'es']).optional().default('en'),
-});
-export type RealWeatherInput = z.infer<typeof RealWeatherInputSchema>;
-
-const CurrentWeatherSchema = z.object({
-  temperature: z.number(),
-  humidity: z.number(),
-  windSpeed: z.number(),
-  conditions: z.string(),
-  country: z.string(),
-});
-
-const ForecastDaySchema = z.object({
-  date: z.string(),
-  high: z.number(),
-  low: z.number(),
-  precipitation: z.number(),
-  conditions: z.string(),
-});
-
-export const RealWeatherOutputSchema = z.object({
-  current: CurrentWeatherSchema,
-  forecast: z.array(ForecastDaySchema),
-});
-export type RealWeatherOutput = z.infer<typeof RealWeatherOutputSchema>;
+import { RealWeatherInputSchema, RealWeatherOutputSchema, type RealWeatherInput, type RealWeatherOutput } from '@/types/weather-api-types';
 
 const API_KEY = process.env.WEATHERAPI_API_KEY;
 const WEATHER_URL = 'https://api.weatherapi.com/v1/forecast.json';

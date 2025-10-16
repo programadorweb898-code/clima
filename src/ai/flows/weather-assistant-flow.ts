@@ -9,8 +9,8 @@
 
 import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
-import { getRealWeather, RealWeatherInputSchema, RealWeatherOutputSchema } from './get-real-weather';
-import type { RealWeatherOutput } from './get-real-weather';
+import { getRealWeather } from './get-real-weather';
+import { RealWeatherInputSchema, RealWeatherOutputSchema, type RealWeatherOutput } from '@/types/weather-api-types';
 import { countries } from '@/lib/countries';
 
 const WeatherAssistantInputSchema = z.object({
