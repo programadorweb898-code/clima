@@ -73,7 +73,6 @@ const weatherAssistantFlow = ai.defineFlow(
   async ({ query, lang, history, currentCountry }) => {
     const translatedCountries = countries.map(c => ({ value: c.value, label: c.label[lang] }));
 
-    const llm = ai.model('googleai/gemini-2.5-flash');
     const prompt = `You are a friendly and helpful weather assistant.
 
 User's question: "${query}"
@@ -93,7 +92,6 @@ List of available countries (use the 'value' for API calls, which is the English
 ${JSON.stringify(translatedCountries.slice(0, 50))}... and more.
 `;
     const llmResponse = await ai.generate({
-      model: llm,
       prompt: prompt,
       history: history,
       tools: [getWeatherTool, getClothingRecommendationTool],
