@@ -57,7 +57,6 @@ const getClothingRecommendationTool = ai.defineTool(
     
     const llmResponse = await ai.generate({
       prompt: recommendationPrompt,
-      model: 'gemini-pro',
     });
     
     return llmResponse.text;
