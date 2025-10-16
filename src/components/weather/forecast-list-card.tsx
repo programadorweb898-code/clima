@@ -20,7 +20,7 @@ export function ForecastListCard({ data }: ForecastListCardProps) {
       <CardContent>
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-2 md:gap-4">
           {data.map((day) => (
-            <ForecastDayCard key={day.day} data={day} />
+            <ForecastDayCard key={day.date} data={day} />
           ))}
         </div>
       </CardContent>
