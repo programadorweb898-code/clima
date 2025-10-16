@@ -15,6 +15,7 @@ export interface ForecastDay {
   low: number;
   precipitation: number;
   conditions: WeatherCondition;
+  // This was 'day' but weatherapi provides 'date'
 }
 
 export interface WeatherData {

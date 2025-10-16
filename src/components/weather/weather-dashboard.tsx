@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useTransition, useContext } from 'react';
+import { useState, useEffect, useTransition, useContext, useCallback } from 'react';
 import type { WeatherData } from '@/types';
 import { getWeatherData } from '@/app/actions';
 import { useToast } from '@/hooks/use-toast';
@@ -15,6 +15,7 @@ import { ForecastListCard } from './forecast-list-card';
 import { WorldMapCard } from './world-map-card';
 import { Card, CardContent } from '../ui/card';
 import { LanguageSwitcher } from './language-switcher';
+import { WeatherAssistant } from './weather-assistant';
 
 export function WeatherDashboard() {
   const [isPending, startTransition] = useTransition();
@@ -23,7 +24,7 @@ export function WeatherDashboard() {
   const [country, setCountry] = useState('United States');
   const { translations, lang } = useContext(LanguageContext);
 
-  const fetchWeather = (targetCountry: string) => {
+  const fetchWeather = useCallback((targetCountry: string) => {
     startTransition(async () => {
       const result = await getWeatherData(targetCountry, lang);
       if (result.success && result.data) {
@@ -37,7 +38,7 @@ export function WeatherDashboard() {
         if (!weatherData) setCountry(''); // Clear country if initial fetch fails
       }
     });
-  };
+  }, [lang, toast, weatherData]);
 
   useEffect(() => {
     if (country) {
@@ -53,6 +54,14 @@ export function WeatherDashboard() {
       fetchWeather(searchCountry);
     }
   };
+
+  const handleAssistantCountryChange = useCallback((newCountry: string) => {
+    const countryData = countries.find(c => c.value.toLowerCase() === newCountry.toLowerCase());
+    if (countryData) {
+        setCountry(countryData.value);
+        fetchWeather(countryData.value);
+    }
+  }, [fetchWeather]);
 
   return (
     <div className="container mx-auto p-4 md:p-8 space-y-8">
@@ -74,6 +83,7 @@ export function WeatherDashboard() {
           className="bg-card/80 focus:ring-accent"
           list="country-list"
           defaultValue={country}
+          key={country} // Force re-render on country change
         />
         <datalist id="country-list">
           {countries.map((c) => (
@@ -87,6 +97,11 @@ export function WeatherDashboard() {
           <span className="sr-only">{translations.search}</span>
         </Button>
       </form>
+
+      <WeatherAssistant 
+        currentCountry={country}
+        onCountryChange={handleAssistantCountryChange}
+      />
 
       {isPending && !weatherData && (
         <div className="flex-center flex-col gap-4 text-center p-16">

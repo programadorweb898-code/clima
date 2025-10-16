@@ -3,6 +3,8 @@
 import { summarizeCurrentWeather } from '@/ai/flows/summarize-current-weather';
 import { getRealWeather } from '@/ai/flows/get-real-weather';
 import { countries } from '@/lib/countries';
+import { weatherAssistant, WeatherAssistantInput } from '@/ai/flows/weather-assistant-flow';
+import type { Message } from '@/components/weather/weather-assistant';
 
 export async function getWeatherData(country: string, lang: 'en' | 'es' = 'en') {
   try {
@@ -40,4 +42,21 @@ export async function getWeatherData(country: string, lang: 'en' | 'es' = 'en') 
     const errorMessage = error instanceof Error ? error.message : 'Failed to fetch weather data.';
     return { success: false, error: errorMessage };
   }
+}
+
+export async function getAssistantResponse(input: WeatherAssistantInput, history: Message[]) {
+    try {
+        const historyForAI = history.map(msg => ({
+            role: msg.role === 'user' ? 'user' : 'model',
+            content: [{ text: msg.content }],
+        }));
+
+        const result = await weatherAssistant({ ...input, history: historyForAI });
+        return { success: true, data: result };
+
+    } catch(error) {
+        console.error(error);
+        const errorMessage = error instanceof Error ? error.message : 'Failed to get assistant response.';
+        return { success: false, error: errorMessage };
+    }
 }

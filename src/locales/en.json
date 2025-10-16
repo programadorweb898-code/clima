@@ -12,5 +12,10 @@
   "forecastTitle": "7-Day Forecast",
   "forecastSubtitle": "The upcoming weather for the next week",
   "globalView": "Global View",
-  "error": "Error"
+  "error": "Error",
+  "assistantTitle": "Weather Assistant",
+  "assistantDescription": "Ask me anything about the weather!",
+  "assistantPlaceholder": "e.g., 'What should I wear today?'",
+  "assistantWelcome": "Ask me about the weather in the current location, or anywhere in the world!",
+  "send": "Send"
 }

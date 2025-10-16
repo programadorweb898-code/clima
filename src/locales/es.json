@@ -12,5 +12,10 @@
   "forecastTitle": "Pronóstico de 7 Días",
   "forecastSubtitle": "El clima para la próxima semana",
   "globalView": "Vista Global",
-  "error": "Error"
+  "error": "Error",
+  "assistantTitle": "Asistente del Clima",
+  "assistantDescription": "¡Pregúntame cualquier cosa sobre el clima!",
+  "assistantPlaceholder": "Ej: '¿Qué ropa me pongo hoy?'",
+  "assistantWelcome": "¡Pregúntame sobre el clima en la ubicación actual o en cualquier parte del mundo!",
+  "send": "Enviar"
 }

@@ -4,15 +4,15 @@
  * @fileOverview Fetches real-time weather data from WeatherAPI.com.
  * 
  * - getRealWeather - A function that fetches current weather and forecast data.
- * - RealWeatherInput - The input type for the getRealWeather function.
- * - RealWeatherOutput - The return type for the getRealWeather function.
+ * - RealWeatherInputSchema - The Zod schema for the getRealWeather function's input.
+ * - RealWeatherOutputSchema - The Zod schema for the getRealWeather function's output.
  */
 
 import { ai } from '@/ai/genkit';
 import { z } from 'genkit';
 import fetch from 'node-fetch';
 
-const RealWeatherInputSchema = z.object({
+export const RealWeatherInputSchema = z.object({
   country: z.string().describe('The country to fetch weather for.'),
   lang: z.enum(['en', 'es']).optional().default('en'),
 });
@@ -34,7 +34,7 @@ const ForecastDaySchema = z.object({
   conditions: z.string(),
 });
 
-const RealWeatherOutputSchema = z.object({
+export const RealWeatherOutputSchema = z.object({
   current: CurrentWeatherSchema,
   forecast: z.array(ForecastDaySchema),
 });
