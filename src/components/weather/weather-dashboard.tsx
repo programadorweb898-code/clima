@@ -45,13 +45,12 @@ export function WeatherDashboard() {
       fetchWeather(country);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [lang]);
+  }, [lang, country]);
 
   const handleSearch = (formData: FormData) => {
     const searchCountry = formData.get('country') as string;
     if (searchCountry) {
       setCountry(searchCountry);
-      fetchWeather(searchCountry);
     }
   };
 
@@ -59,20 +58,22 @@ export function WeatherDashboard() {
     const countryData = countries.find(c => c.value.toLowerCase() === newCountry.toLowerCase());
     if (countryData) {
         setCountry(countryData.value);
-        fetchWeather(countryData.value);
     }
-  }, [fetchWeather]);
+  }, []);
 
   return (
     <div className="container mx-auto p-4 md:p-8 space-y-8">
-      <header className="text-center relative">
-        <div className="absolute top-0 right-0">
-          <LanguageSwitcher />
+      <header className="flex justify-between items-start">
+        <div className="w-24 hidden md:block"></div> {/* Spacer */}
+        <div className="text-center flex-grow">
+            <h1 className="font-headline text-4xl md:text-5xl font-bold tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
+            {translations.title}
+            </h1>
+            <p className="text-muted-foreground mt-2 text-lg">{translations.subtitle}</p>
         </div>
-        <h1 className="font-headline text-4xl md:text-5xl font-bold tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
-          {translations.title}
-        </h1>
-        <p className="text-muted-foreground mt-2 text-lg">{translations.subtitle}</p>
+        <div className="w-24 flex justify-end">
+            <LanguageSwitcher />
+        </div>
       </header>
 
       <form action={handleSearch} className="flex gap-2 max-w-md mx-auto">
@@ -123,7 +124,7 @@ export function WeatherDashboard() {
         </div>
       )}
 
-      {!isPending && !weatherData && (
+      {!isPending && !weatherData && country && (
         <Card className="max-w-md mx-auto">
             <CardContent className="p-8 text-center">
                 <p className="font-headline text-xl">{translations.welcome}</p>
