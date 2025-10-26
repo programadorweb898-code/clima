@@ -50,7 +50,7 @@ export function WeatherDashboard() {
   const handleSearch = (formData: FormData) => {
     const searchCountry = formData.get('country') as string;
     if (searchCountry) {
-      setCountry(searchCountry);
+      setCountry(searchCountry.trim());
     }
   };
 
@@ -63,15 +63,15 @@ export function WeatherDashboard() {
 
   return (
     <div className="container mx-auto p-4 md:p-8 space-y-8">
-      <header className="flex justify-between items-start">
-        <div className="w-24 hidden md:block"></div> {/* Spacer */}
-        <div className="text-center flex-grow">
+      <header className="flex justify-between items-center w-full">
+        <div className="flex-1"></div> {/* Spacer */}
+        <div className="text-center flex-1">
             <h1 className="font-headline text-4xl md:text-5xl font-bold tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
             {translations.title}
             </h1>
             <p className="text-muted-foreground mt-2 text-lg">{translations.subtitle}</p>
         </div>
-        <div className="w-24 flex justify-end">
+        <div className="flex-1 flex justify-end">
             <LanguageSwitcher />
         </div>
       </header>
