@@ -8,7 +8,7 @@ export function LanguageSwitcher() {
   const { lang, setLang } = useContext(LanguageContext);
 
   return (
-    <div className="flex gap-1">
+    <div className="flex justify-center gap-1">
       <Button
         variant={lang === 'en' ? 'default' : 'ghost'}
         size="sm"
