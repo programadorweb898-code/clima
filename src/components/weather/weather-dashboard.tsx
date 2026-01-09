@@ -12,7 +12,6 @@ import { Input } from '@/components/ui/input';
 import { Search, Loader } from 'lucide-react';
 import { CurrentWeatherCard } from './current-weather-card';
 import { ForecastListCard } from './forecast-list-card';
-import { WorldMapCard } from './world-map-card';
 import { Card, CardContent } from '../ui/card';
 import { LanguageSwitcher } from './language-switcher';
 import { WeatherAssistant } from './weather-assistant';
@@ -64,17 +63,17 @@ export function WeatherDashboard() {
   return (
     <div className="container mx-auto p-4 md:p-8 space-y-8">
       <header className="flex justify-between items-center w-full">
-        <div className="flex-1"></div> {/* Spacer */}
-        <div className="text-center flex-1">
+        <div className="text-left">
             <h1 className="font-headline text-4xl md:text-5xl font-bold tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
             {translations.title}
             </h1>
-            <p className="text-muted-foreground mt-2 text-lg">{translations.subtitle}</p>
         </div>
-        <div className="flex-1 flex justify-end">
+        <div className="flex-shrink-0">
             <LanguageSwitcher />
         </div>
       </header>
+      <p className="text-muted-foreground text-lg -mt-6">{translations.subtitle}</p>
+
 
       <form action={handleSearch} className="flex gap-2 max-w-md mx-auto">
         <Input
@@ -113,14 +112,9 @@ export function WeatherDashboard() {
       )}
 
       {weatherData && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-in fade-in duration-500">
-          <div className="lg:col-span-2 space-y-6">
+        <div className="space-y-6 animate-in fade-in duration-500">
             <CurrentWeatherCard data={weatherData.current} />
             <ForecastListCard data={weatherData.forecast} />
-          </div>
-          <div className="lg:col-span-1">
-            <WorldMapCard />
-          </div>
         </div>
       )}
 

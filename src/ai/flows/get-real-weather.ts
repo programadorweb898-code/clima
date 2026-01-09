@@ -25,8 +25,8 @@ const getRealWeatherFlow = ai.defineFlow(
     }
 
     // Get weather data (current and forecast)
-    // We request 8 days to get today + the next 7 days for the forecast.
-    const weatherResponse = await fetch(`${WEATHER_URL}?key=${API_KEY}&q=${country}&days=8&aqi=no&alerts=no&lang=${lang}`);
+    // We request 3 days to get today + the next 2 days for the forecast.
+    const weatherResponse = await fetch(`${WEATHER_URL}?key=${API_KEY}&q=${country}&days=3&aqi=no&alerts=no&lang=${lang}`);
     if (!weatherResponse.ok) {
         const errorData = await weatherResponse.json();
         throw new Error(errorData.error.message || 'Failed to fetch weather data.');
@@ -42,8 +42,8 @@ const getRealWeatherFlow = ai.defineFlow(
       country: weatherData.location.name,
     };
 
-    // Format forecast data for the next 7 days
-    const forecast = weatherData.forecast.forecastday.slice(1, 8).map((day: any) => ({
+    // Format forecast data for the next 2 days
+    const forecast = weatherData.forecast.forecastday.slice(1, 3).map((day: any) => ({
       date: day.date,
       high: Math.round(day.day.maxtemp_c),
       low: Math.round(day.day.mintemp_c),
