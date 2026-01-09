@@ -63,16 +63,17 @@ export function WeatherDashboard() {
   return (
     <div className="container mx-auto p-4 md:p-8 space-y-8">
       <header className="flex flex-col items-center text-center">
-        <div className="w-full flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="md:flex-1 md:invisible">
-            {/* Espaciador para centrar el título en desktop */}
-            <LanguageSwitcher />
+        <div className="w-full flex flex-col md:flex-row items-center justify-center md:justify-between relative gap-4">
+          <div className="w-full md:absolute md:inset-0 flex items-center justify-center pointer-events-none">
+            <h1 className="font-headline text-4xl md:text-5xl font-bold tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
+              {translations.title}
+            </h1>
           </div>
-          <h1 className="font-headline text-4xl md:text-5xl font-bold tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent text-center flex-shrink-0">
-            {translations.title}
-          </h1>
-          <div className="md:flex-1 flex justify-center md:justify-end">
-            <LanguageSwitcher />
+          <div className="w-full flex md:hidden justify-center order-last">
+             <LanguageSwitcher />
+          </div>
+          <div className="hidden md:flex flex-1 justify-end">
+             <LanguageSwitcher />
           </div>
         </div>
         <p className="text-muted-foreground text-lg mt-2 text-center">{translations.subtitle}</p>
