@@ -78,9 +78,7 @@ ${JSON.stringify(messages, null, 2)}
 Your response must be a valid JSON array with the structure: [{"role": "user"|"assistant", "content": "translated text"}]
 Do not include any markdown formatting or code blocks, just the raw JSON array.`;
 
-        const llmResponse = await ai.generate({
-            prompt: prompt,
-        });
+        const llmResponse = await ai.generate(prompt);
 
         const responseText = llmResponse.text.trim();
         // Remove markdown code blocks if present

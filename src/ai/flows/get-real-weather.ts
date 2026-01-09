@@ -28,8 +28,9 @@ const getRealWeatherFlow = ai.defineFlow(
     // We request 3 days to get today + the next 2 days for the forecast.
     const weatherResponse = await fetch(`${WEATHER_URL}?key=${API_KEY}&q=${country}&days=3&aqi=no&alerts=no&lang=${lang}`);
     if (!weatherResponse.ok) {
-        const errorData = await weatherResponse.json();
-        throw new Error(errorData.error.message || 'Failed to fetch weather data.');
+        const errorData = await weatherResponse.json() as any;
+        const errorMessage = errorData?.error?.message || `Failed to fetch weather data. Status: ${weatherResponse.status}`;
+        throw new Error(errorMessage);
     }
     const weatherData = (await weatherResponse.json()) as any;
     

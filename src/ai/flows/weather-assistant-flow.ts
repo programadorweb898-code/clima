@@ -56,9 +56,7 @@ const getClothingRecommendationTool = ai.defineTool(
     const languageText = lang === 'es' ? 'Spanish (español)' : 'English';
     const recommendationPrompt = `Based on a temperature of ${temperature}°C and weather conditions described as "${conditions}", provide a brief, friendly clothing recommendation. The user is asking what to wear right now. You MUST respond in ${languageText}. Your entire response must be in ${languageText}.`;
     
-    const llmResponse = await ai.generate({
-      prompt: recommendationPrompt,
-    });
+    const llmResponse = await ai.generate(recommendationPrompt);
     
     return llmResponse.text;
   }
@@ -100,8 +98,11 @@ ${JSON.stringify(translatedCountries.slice(0, 50))}... and more.
 Remember: Your entire response must be in ${lang === 'es' ? 'Spanish (español)' : 'English'}.
 `;
     const llmResponse = await ai.generate({
-      prompt: prompt,
-      history: history,
+      model: 'googleai/gemini-2.5-flash',
+      prompt: [
+        ...(history || []),
+        { role: 'user', content: [{ text: prompt }] },
+      ],
       tools: [getWeatherTool, getClothingRecommendationTool],
       output: {
         format: 'json',
