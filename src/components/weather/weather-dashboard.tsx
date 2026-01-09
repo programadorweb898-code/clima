@@ -62,17 +62,15 @@ export function WeatherDashboard() {
 
   return (
     <div className="container mx-auto p-4 md:p-8 space-y-8">
-      <header className="flex justify-between items-center w-full">
-        <div className="text-left">
-            <h1 className="font-headline text-4xl md:text-5xl font-bold tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
-            {translations.title}
-            </h1>
-        </div>
-        <div className="flex-shrink-0">
-            <LanguageSwitcher />
+      <header className="relative w-full text-center">
+        <h1 className="font-headline text-4xl md:text-5xl font-bold tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-primary to-accent">
+          {translations.title}
+        </h1>
+        <div className="absolute top-0 right-0">
+          <LanguageSwitcher />
         </div>
       </header>
-      <p className="text-muted-foreground text-lg -mt-6">{translations.subtitle}</p>
+      <p className="text-muted-foreground text-lg -mt-6 text-center">{translations.subtitle}</p>
 
 
       <form action={handleSearch} className="flex gap-2 max-w-md mx-auto">
