@@ -2,7 +2,7 @@
 import { useState, useTransition, useContext, useRef, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { LanguageContext } from '@/context/language-context';
-import { getAssistantResponse } from '@/app/actions';
+import { getAssistantResponse, translateMessages } from '@/app/actions';
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -25,7 +25,23 @@ export function WeatherAssistant({ currentCountry, onCountryChange }: WeatherAss
   const [isPending, startTransition] = useTransition();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
+  const [isTranslating, setIsTranslating] = useState(false);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const previousLangRef = useRef(lang);
+
+  // Translate chat history when language changes
+  useEffect(() => {
+    if (previousLangRef.current !== lang && messages.length > 0) {
+      setIsTranslating(true);
+      translateMessages(messages, lang).then((result) => {
+        if (result.success && result.data) {
+          setMessages(result.data);
+        }
+        setIsTranslating(false);
+      });
+    }
+    previousLangRef.current = lang;
+  }, [lang, messages.length]);
 
   useEffect(() => {
     if (scrollAreaRef.current) {
@@ -39,7 +55,7 @@ export function WeatherAssistant({ currentCountry, onCountryChange }: WeatherAss
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!input) return;
+    if (!input || isPending || isTranslating) return;
 
     const userMessage: Message = { role: 'user', content: input };
     setMessages((prev) => [...prev, userMessage]);
@@ -72,12 +88,18 @@ export function WeatherAssistant({ currentCountry, onCountryChange }: WeatherAss
         <div className="space-y-4">
             <ScrollArea className="h-64 w-full pr-4" ref={scrollAreaRef}>
                 <div className="space-y-4">
-                {messages.length === 0 && (
+                {messages.length === 0 && !isTranslating && (
                     <div className="text-center text-muted-foreground py-8">
                         {translations.assistantWelcome}
                     </div>
                 )}
-                {messages.map((message, index) => (
+                {isTranslating && (
+                    <div className="text-center text-muted-foreground py-8 flex items-center justify-center gap-2">
+                        <Loader className="size-4 animate-spin" />
+                        {lang === 'es' ? 'Traduciendo mensajes...' : 'Translating messages...'}
+                    </div>
+                )}
+                {!isTranslating && messages.map((message, index) => (
                     <div key={index} className={`flex gap-2 ${message.role === 'user' ? 'justify-end' : ''}`}>
                     {message.role === 'assistant' && <Sparkles className="size-5 text-accent flex-shrink-0 mt-1" />}
                     <div
@@ -91,7 +113,7 @@ export function WeatherAssistant({ currentCountry, onCountryChange }: WeatherAss
                     </div>
                     </div>
                 ))}
-                {isPending && messages[messages.length-1].role === 'user' && (
+                {isPending && messages.length > 0 && messages[messages.length-1].role === 'user' && (
                     <div className="flex gap-2">
                         <Sparkles className="size-5 text-accent flex-shrink-0 mt-1" />
                         <div className="rounded-lg px-3 py-2 bg-muted">
@@ -106,9 +128,9 @@ export function WeatherAssistant({ currentCountry, onCountryChange }: WeatherAss
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     placeholder={translations.assistantPlaceholder}
-                    disabled={isPending}
+                    disabled={isPending || isTranslating}
                 />
-                <Button type="submit" disabled={isPending}>
+                <Button type="submit" disabled={isPending || isTranslating}>
                     {isPending ? <Loader className="animate-spin" /> : translations.send}
                 </Button>
             </form>

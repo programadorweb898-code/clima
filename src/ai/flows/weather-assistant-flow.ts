@@ -53,7 +53,8 @@ const getClothingRecommendationTool = ai.defineTool(
     outputSchema: z.string(),
   },
   async ({ temperature, conditions, lang }) => {
-    const recommendationPrompt = `Based on a temperature of ${temperature}°C and weather conditions described as "${conditions}", provide a brief, friendly clothing recommendation. The user is asking what to wear right now. Respond in ${lang}.`;
+    const languageText = lang === 'es' ? 'Spanish (español)' : 'English';
+    const recommendationPrompt = `Based on a temperature of ${temperature}°C and weather conditions described as "${conditions}", provide a brief, friendly clothing recommendation. The user is asking what to wear right now. You MUST respond in ${languageText}. Your entire response must be in ${languageText}.`;
     
     const llmResponse = await ai.generate({
       prompt: recommendationPrompt,
@@ -72,7 +73,13 @@ const weatherAssistantFlow = ai.defineFlow(
   async ({ query, lang, history, currentCountry }) => {
     const translatedCountries = countries.map(c => ({ value: c.value, label: c.label[lang] }));
 
+    const languageInstruction = lang === 'es' 
+      ? 'IMPORTANTE: Debes responder SIEMPRE en español. Todas tus respuestas deben estar completamente en español.'
+      : 'IMPORTANT: You must ALWAYS respond in English. All your responses must be completely in English.';
+
     const prompt = `You are a friendly and helpful weather assistant.
+
+${languageInstruction}
 
 User's question: "${query}"
 Current language: ${lang}
@@ -84,11 +91,13 @@ Analyze the user's question.
 - If they ask for the weather in a specific place, use the getWeather tool. Even if they mention a city, find the country and use that. For example, if they say "Paris", you should look for "France".
 - If they ask for clothing advice, use the getClothingRecommendation tool with the current weather data. If you don't have it, get it first with the getWeather tool for the current country.
 - If they ask a general question comparing weather (e.g., "is it warmer than yesterday?"), you'll need to call the getWeather tool to get the data you need to answer. You have access to the 7-day forecast.
-- After using a tool, formulate a natural language response to the user based on the tool's output.
+- After using a tool, formulate a natural language response to the user based on the tool's output IN THE LANGUAGE SPECIFIED (${lang}).
 - If the user's query mentions a country, you must set the 'targetCountry' field in the final output to the english name of that country so the app can navigate. You have a list of available countries. If the user asks about "Spain", you must return "Spain".
 
 List of available countries (use the 'value' for API calls, which is the English name):
 ${JSON.stringify(translatedCountries.slice(0, 50))}... and more.
+
+Remember: Your entire response must be in ${lang === 'es' ? 'Spanish (español)' : 'English'}.
 `;
     const llmResponse = await ai.generate({
       prompt: prompt,

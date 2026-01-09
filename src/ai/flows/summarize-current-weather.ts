@@ -34,13 +34,17 @@ const summarizeCurrentWeatherPrompt = ai.definePrompt({
   name: 'summarizeCurrentWeatherPrompt',
   input: {schema: SummarizeCurrentWeatherInputSchema},
   output: {schema: SummarizeCurrentWeatherOutputSchema},
-  prompt: `Summarize the current weather conditions for {{country}} in a single, concise sentence in {{lang}}.
+  prompt: `You must respond in {{lang}} language ONLY. If {{lang}} is 'es', respond in Spanish. If {{lang}} is 'en', respond in English.
+
+Summarize the current weather conditions for {{country}} in a single, concise sentence.
 
 Current Conditions:
 - Temperature: {{temperature}}°C
 - Humidity: {{humidity}}%
 - Wind Speed: {{windSpeed}} km/h
 - Conditions: {{conditions}}
+
+Remember: Your response MUST be entirely in {{lang}} language.
 
 Summary: `,
 });
