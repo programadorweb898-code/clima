@@ -75,11 +75,10 @@ const weatherAssistantFlow = ai.defineFlow(
       ? 'IMPORTANTE: Debes responder SIEMPRE en español. Todas tus respuestas deben estar completamente en español.'
       : 'IMPORTANT: You must ALWAYS respond in English. All your responses must be completely in English.';
 
-    const prompt = `You are a friendly and helpful weather assistant.
+    const systemPrompt = `You are a friendly and helpful weather assistant.
 
 ${languageInstruction}
 
-User's question: "${query}"
 Current language: ${lang}
 ${currentCountry ? `The user is currently viewing the weather for: ${currentCountry}.` : ''}
 
@@ -97,12 +96,12 @@ ${JSON.stringify(translatedCountries.slice(0, 50))}... and more.
 
 Remember: Your entire response must be in ${lang === 'es' ? 'Spanish (español)' : 'English'}.
 `;
+
     const llmResponse = await ai.generate({
       model: 'googleai/gemini-2.5-flash',
-      prompt: [
-        ...(history || []),
-        { role: 'user', content: [{ text: prompt }] },
-      ],
+      system: systemPrompt,
+      prompt: query,
+      history: history,
       tools: [getWeatherTool, getClothingRecommendationTool],
       output: {
         format: 'json',
