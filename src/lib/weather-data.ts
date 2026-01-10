@@ -31,14 +31,19 @@ export const generateMockData = (country: string) => {
     conditions: CONDITIONS[Math.floor(seededRandom(currentSeed * 4) * CONDITIONS.length)] as WeatherCondition,
   };
 
-  const today = new Date().getDay();
+  const today = new Date();
   const forecast: ForecastDay[] = Array.from({ length: 7 }, (_, i) => {
     const daySeed = seededRandom(hash + i + 1);
     const low = Math.floor(seededRandom(daySeed * 1) * 45) - 15;
     const high = low + Math.floor(seededRandom(daySeed * 2) * 15);
     const precipitation = Math.floor(seededRandom(daySeed * 3) * 100);
+    
+    // Calculate the date for this forecast day
+    const forecastDate = new Date(today);
+    forecastDate.setDate(today.getDate() + i + 1);
+    
     return {
-      day: DAYS[(today + i + 1) % 7],
+      date: forecastDate.toISOString().split('T')[0], // Format: YYYY-MM-DD
       low,
       high,
       precipitation,

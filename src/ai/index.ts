@@ -1,8 +1,7 @@
 'use server';
 // This is the entry point for Genkit in production.
-import start from '@genkit-ai/next';
 import {config} from 'dotenv';
-import {ai} from './genkit';
+import './genkit';
 
 // Load environment variables from .env file.
 config();
@@ -12,5 +11,5 @@ import './flows/summarize-current-weather';
 import './flows/get-real-weather';
 import './flows/weather-assistant-flow';
 
-// Start the Genkit server.
-start(ai);
+// The Genkit server is started automatically by Next.js
+// when you import flows in a Next.js app with @genkit-ai/next
